@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'java-library'
+}
+
+group = 'org.reldb'
+version = '0.0.1-SNAPSHOT'
+description = 'RelDB Toolbox'
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.0'
+    testImplementation 'org.junit.platform:junit-platform-runner:1.8.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/toolbox.version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+javadoc {
+    doLast {
+        delete "docs/javadoc"
+        copy {
+            from "build/docs/"
+            into "docs/"
+        }
+    }
+}
