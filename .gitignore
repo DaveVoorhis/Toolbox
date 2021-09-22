@@ -34,7 +34,7 @@ hs_err_pid*
 
 # Gradle
 .gradle
-/lib/build/
+/Toolbox/build/
 /gradle/
 gradlew
 gradlew.bat
