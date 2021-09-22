@@ -36,6 +36,17 @@ classes {
     dependsOn createProperties
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
 javadoc {
     doLast {
         delete "docs/javadoc"
