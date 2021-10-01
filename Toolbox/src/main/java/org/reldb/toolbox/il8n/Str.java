@@ -96,7 +96,7 @@ public class Str {
      * @param location Location.
      * @return Displayable message.
      */
-    String ing(Msg formatSpecification, String location, Object ... arguments) {
+    public static String ing(Msg formatSpecification, String location, Object ... arguments) {
         var sourceFormat = formatSpecification.formatSpec;
         var translatedFormat = getTranslation(sourceFormat);
         return location + ": " + MessageFormat.format(translatedFormat, arguments);
@@ -110,7 +110,7 @@ public class Str {
      * @param location Location.
      * @return Displayable message.
      */
-    String ing(Msg formatSpecification, Class<?> location, Object ... arguments) {
+    public static String ing(Msg formatSpecification, Class<?> location, Object ... arguments) {
         return ing(formatSpecification, location.getName(), arguments);
     }
 }
