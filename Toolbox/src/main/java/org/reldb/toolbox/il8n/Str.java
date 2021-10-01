@@ -89,30 +89,17 @@ public class Str {
     }
 
     /**
-     * Given a message containing a format specification per java.text.MessageFormat, location, and optional
+     * Given a message containing a format specification per java.text.MessageFormat and optional
      * arguments, return the string as its locale-specific, possibly-translated message.
      *
      * @param formatSpecification Static specification of messagee format.
-     * @param location Location.
      * @param arguments Message arguments.
      * @return Displayable message.
      */
-    public static String ing(Msg formatSpecification, String location, Object ... arguments) {
+    public static String ing(Msg formatSpecification, Object ... arguments) {
         var sourceFormat = formatSpecification.formatSpec;
         var translatedFormat = getTranslation(sourceFormat);
-        return location + ": " + MessageFormat.format(translatedFormat, arguments);
+        return formatSpecification.location + ": " + MessageFormat.format(translatedFormat, arguments);
     }
 
-    /**
-     * Given a message containing a format specification per java.text.MessageFormat, location, and optional
-     * arguments, return the string as its locale-specific, possibly-translated message.
-     *
-     * @param formatSpecification Static specification of messagee format.
-     * @param location Location.
-     * @param arguments Message arguments.
-     * @return Displayable message.
-     */
-    public static String ing(Msg formatSpecification, Class<?> location, Object ... arguments) {
-        return ing(formatSpecification, location.getName(), arguments);
-    }
 }

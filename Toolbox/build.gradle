@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.reldb'
-version = '0.0.4-SNAPSHOT'
+version = '0.0.5-SNAPSHOT'
 description = 'RelDB Toolbox'
 java.sourceCompatibility = JavaVersion.VERSION_11
 

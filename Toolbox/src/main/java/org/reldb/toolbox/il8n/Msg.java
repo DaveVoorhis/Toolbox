@@ -21,17 +21,32 @@ public class Msg {
     /** Format specification per java.text.MessageFormat. */
     public final String formatSpec;
 
+    /** Location of this message. */
+    public final String location;
+
     /**
      * Define a format specification per java.text.MessageFormat.
      *
      * @param formatSpec Format specification per java.text.MessageFormat.
+     * @param location Location of this message.
      */
-    public Msg(String formatSpec) {
+    public Msg(String formatSpec, String location) {
         this.formatSpec = formatSpec;
+        this.location = location;
         msgs.add(this);
     }
 
+    /**
+     * Define a format specification per java.text.MessageFormat.
+     *
+     * @param formatSpec Format specification per java.text.MessageFormat.
+     * @param location Location of this message.
+     */
+    public Msg(String formatSpec, Class<?> location) {
+        this(formatSpec, location.toString());
+    }
+
     public String toString() {
-        return formatSpec;
+        return location + ": " + formatSpec;
     }
 }
