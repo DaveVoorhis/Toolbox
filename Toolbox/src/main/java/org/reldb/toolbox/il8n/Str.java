@@ -6,6 +6,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * Message registry.
+ */
 public class Str {
 
     private static String displayLanguage = Locale.getDefault().getDisplayLanguage();
@@ -16,7 +19,7 @@ public class Str {
     /**
      * Set the display language. Default is Locale.getDefault().getDisplayLanguage().
      *
-     * @param displayLanguage
+     * @param displayLanguage Language identifier, of the kind returned by Locale.getDefault().getDisplayLanguage().
      */
     public static void setDisplayLanguage(String displayLanguage) {
         Str.displayLanguage = displayLanguage;
@@ -25,7 +28,7 @@ public class Str {
     /**
      * Get the display language.
      *
-     * @return displayLanguage string.
+     * @return Language identifier, of the kind returned by Locale.getDefault().getDisplayLanguage().
      */
     public static String getDisplayLanguage() {
         return displayLanguage;

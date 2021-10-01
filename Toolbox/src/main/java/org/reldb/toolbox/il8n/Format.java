@@ -8,7 +8,7 @@ import java.util.stream.Stream;
  * and a location.
  */
 public class Format {
-    public static Vector<Format> formats = new Vector<>();
+    private static Vector<Format> formats = new Vector<>();
 
     /**
      * Get a Stream of all registered FormatS.
@@ -19,6 +19,7 @@ public class Format {
         return formats.stream();
     }
 
+    /** Format specification per java.text.MessageFormat. */
     public final String formatSpec;
 
     /**
