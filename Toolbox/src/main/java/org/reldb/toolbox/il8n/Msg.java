@@ -4,19 +4,18 @@ import java.util.Vector;
 import java.util.stream.Stream;
 
 /**
- * Represent a translatable message specified as a parametrised format string per java.text.MessageFormat,
- * and a location.
+ * Represent a translatable message specified as a parametrised format string per java.text.MessageFormat.
  */
-public class Format {
-    private static Vector<Format> formats = new Vector<>();
+public class Msg {
+    private static Vector<Msg> msgs = new Vector<>();
 
     /**
      * Get a Stream of all registered FormatS.
      *
      * @return Stream of Format.
      */
-    public static Stream<Format> getFormats() {
-        return formats.stream();
+    public static Stream<Msg> getMsgs() {
+        return msgs.stream();
     }
 
     /** Format specification per java.text.MessageFormat. */
@@ -27,9 +26,9 @@ public class Format {
      *
      * @param formatSpec Format specification per java.text.MessageFormat.
      */
-    public Format(String formatSpec) {
+    public Msg(String formatSpec) {
         this.formatSpec = formatSpec;
-        formats.add(this);
+        msgs.add(this);
     }
 
     public String toString() {
