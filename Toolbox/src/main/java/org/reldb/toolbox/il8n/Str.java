@@ -1,119 +1,113 @@
 package org.reldb.toolbox.il8n;
 
-import java.lang.reflect.Modifier;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
-/**
- * Message registry. Later, this will be used to facilitate localisation/internationalisation of error messages.
- */
 public class Str {
 
+    private static String displayLanguage = Locale.getDefault().getDisplayLanguage();
+
     private static final Vector<String> strings = new Vector<>();
-
-    private static final int errorText = register("ERROR");
-    private static final int warningText = register("WARNING");
-    private static final int noteText = register("NOTE");
-    private static final int msgPreambleText = register("MSG");
-    private static final int fromText = register("from");
+    private static final Map<String, Map<String, String>> translations = new HashMap<>();
 
     /**
-     * Register a message string.
+     * Set the display language. Default is Locale.getDefault().getDisplayLanguage().
      *
-     * @param string The string.
-     * @return The message index.
+     * @param displayLanguage
      */
-    public static int register(String string) {
-        strings.add(string);
-        return strings.size() - 1;
+    public static void setDisplayLanguage(String displayLanguage) {
+        Str.displayLanguage = displayLanguage;
     }
 
     /**
-     * Register a message string.
+     * Get the display language.
      *
-     * @param format Standard Java format string.
-     * @param module Module name.
-     * @param msgType Type of message.
-     * @return Message index.
+     * @return displayLanguage string.
      */
-    public static int register(String format, String module, String msgType) {
-        return register(msgType + " " + strings.get(fromText) + " " + module + ": " + format);
+    public static String getDisplayLanguage() {
+        return displayLanguage;
     }
 
     /**
-     * Register an Error format message in a given module.
+     * Set the source format string to target format string map for a given language.
      *
-     * @param format Standard Java format string.
-     * @param module Module name.
-     * @return Message index.
+     * @param language Language identifier, of the kind returned by Locale.getDefault().getDisplayLanguage().
+     * @param sourceFormatToTranslatedFormat A Map from source format strings defined in code to translated strings
+     *                                   in the specified language.
      */
-    public static int E(String format, String module) {
-        return register(format, module, strings.get(errorText));
+    public static void addTranslations(String language, Map<String, String> sourceFormatToTranslatedFormat) {
+        translations.put(language, sourceFormatToTranslatedFormat);
     }
 
     /**
-     * Register a Warning format message in a given module.
+     * Add a format string translation for a given language.
      *
-     * @param format Standard Java format string.
-     * @param module Module name.
-     * @return Message index.
+     * @param language Language identifier, of the kind returned by Locale.getDefault().getDisplayLanguage().
+     * @param sourceFormat Source format string, of the kind used by java.text.MessageFormat.
+     * @param translatedFormat Translated format string, of the kind used by java.text.MessageFormat.
      */
-    public static int W(String format, String module) {
-        return register(format, module, strings.get(warningText));
-    }
-
-    /**
-     * Register a Note format message in a given module.
-     *
-     * @param format Standard Java format string.
-     * @param module Module name.
-     * @return Message index.
-     */
-    public static int N(String format, String module) {
-        return register(format, module, strings.get(noteText));
-    }
-
-    /**
-     * Get the string at a given message index.
-     *
-     * @param msgIdx Message index.
-     * @return A string.
-     */
-    public static String getString(int msgIdx) {
-        if (msgIdx < 0 || msgIdx >= strings.size())
-            return null;
-        return strings.get(msgIdx);
-    }
-
-    /**
-     * Given a message index and zero or more arguments, return a string.
-     *
-     * @param msgIdx Message index.
-     * @param objects Parameter arguments.
-     * @return Generated string.
-     */
-    public static String ing(int msgIdx, Object... objects) {
-        String formatString = getString(msgIdx);
-        if (formatString == null)
-            return strings.get(errorText) + ": " + msgIdx;
-        return String.format(strings.get(msgPreambleText) + String.format("%05d: ", msgIdx) + formatString, objects);
-    }
-
-    /**
-     * Given a class containing internationalisable strings, dump them to console.
-     *
-     * @param strings A class containing internationalisable strings.
-     */
-    public static void dump(Class<?> strings) {
-        var fields = strings.getFields();
-        for (java.lang.reflect.Field field : fields) {
-            if (Modifier.isPublic(field.getModifiers()))
-                try {
-                    int value = field.getInt(field);
-                    String name = field.getName();
-                    System.out.format("MSG%05d  %-40s  %s", value, name, getString(value));
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+    public static void addTranslation(String language, String sourceFormat, String translatedFormat) {
+        var formatMap = translations.get(language);
+        if (formatMap == null) {
+            formatMap = new HashMap<>();
+            formatMap.put(sourceFormat, translatedFormat);
         }
+        translations.put(language, formatMap);
+    }
+
+    /**
+     * Get a translation of a source format string for a given language.
+     *
+     * @param language Language identifier, of the kind returned by Locale.getDefault().getDisplayLanguage().
+     * @param sourceFormat Source format string, of the kind used by java.text.MessageFormat.
+     * @return Translated format string, of the kind used by java.text.MessageFormat.
+     */
+    public static String getTranslation(String language, String sourceFormat) {
+        var formatMap = translations.get(language);
+        if (formatMap == null)
+            return sourceFormat;
+        var translation = formatMap.get(sourceFormat);
+        return translation == null
+                ? sourceFormat
+                : translation;
+    }
+
+    /**
+     * Get a translation of a source format string for language returned by getDisplayLanguage().
+     *
+     * @param sourceFormat Source format string, of the kind used by java.text.MessageFormat.
+     * @return Translated format string, of the kind used by java.text.MessageFormat.
+     */
+    public static String getTranslation(String sourceFormat) {
+        return getTranslation(getDisplayLanguage(), sourceFormat);
+    }
+
+    /**
+     * Given a message containing a format specification per java.text.MessageFormat, location, and optional
+     * arguments, return the string as its locale-specific, possibly-translated message.
+     *
+     * @param formatSpecification Static specification of messagee format.
+     * @param location Location.
+     * @return Displayable message.
+     */
+    String ing(Format formatSpecification, String location, Object ... arguments) {
+        var sourceFormat = formatSpecification.formatSpec;
+        var translatedFormat = getTranslation(sourceFormat);
+        return location + ": " + MessageFormat.format(translatedFormat, arguments);
+    }
+
+    /**
+     * Given a message containing a format specification per java.text.MessageFormat, location, and optional
+     * arguments, return the string as its locale-specific, possibly-translated message.
+     *
+     * @param formatSpecification Static specification of messagee format.
+     * @param location Location.
+     * @return Displayable message.
+     */
+    String ing(Format formatSpecification, Class<?> location, Object ... arguments) {
+        return ing(formatSpecification, location.getName(), arguments);
     }
 }
