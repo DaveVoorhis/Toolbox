@@ -94,6 +94,7 @@ public class Str {
      *
      * @param formatSpecification Static specification of messagee format.
      * @param location Location.
+     * @param arguments Message arguments.
      * @return Displayable message.
      */
     public static String ing(Msg formatSpecification, String location, Object ... arguments) {
@@ -108,6 +109,7 @@ public class Str {
      *
      * @param formatSpecification Static specification of messagee format.
      * @param location Location.
+     * @param arguments Message arguments.
      * @return Displayable message.
      */
     public static String ing(Msg formatSpecification, Class<?> location, Object ... arguments) {
