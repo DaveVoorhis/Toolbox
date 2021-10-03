@@ -46,6 +46,15 @@ public class Msg {
         this(formatSpec, location.toString());
     }
 
+    /**
+     * Define a format specification per java.text.MessageFormat.
+     *
+     * @param formatSpec Format specification per java.text.MessageFormat.
+     */
+    public Msg(String formatSpec) {
+        this(formatSpec, (String)null);
+    }
+
     public String toString() {
         return location + ": " + formatSpec;
     }

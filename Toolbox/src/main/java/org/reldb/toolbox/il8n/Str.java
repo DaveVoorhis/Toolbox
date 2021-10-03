@@ -99,7 +99,11 @@ public class Str {
     public static String ing(Msg formatSpecification, Object ... arguments) {
         var sourceFormat = formatSpecification.formatSpec;
         var translatedFormat = getTranslation(sourceFormat);
-        return formatSpecification.location + ": " + MessageFormat.format(translatedFormat, arguments);
+        return
+            (formatSpecification.location != null
+                ? formatSpecification.location + ": "
+                : "")
+            + MessageFormat.format(translatedFormat, arguments);
     }
 
 }
