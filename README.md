@@ -7,4 +7,4 @@ Miscellaneous tools used by various RelDB.org projects.
 gradle clean build javadoc publishToMavenLocal
 ```
 
-### Work-in-progress and soon available on Maven Central. Watch this space! ###
+### Available on Maven Central. See https://search.maven.org/artifact/org.reldb/Toolbox ###
