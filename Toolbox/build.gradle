@@ -34,16 +34,6 @@ classes {
     dependsOn createProperties
 }
 
-javadoc {
-    doLast {
-        delete "docs/javadoc"
-        copy {
-            from "build/docs/"
-            into "docs/"
-        }
-    }
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
