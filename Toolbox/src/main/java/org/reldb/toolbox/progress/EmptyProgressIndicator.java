@@ -14,13 +14,18 @@ public class EmptyProgressIndicator implements ProgressIndicator {
     }
 
     @Override
+    public int getSteps() {
+        return 0;
+    }
+
+    @Override
     public void move(int step, String additionalInformation) {
         position = step;
         lastMessage = additionalInformation;
     }
 
     @Override
-    public int getValue() {
+    public int getPosition() {
         return position;
     }
 

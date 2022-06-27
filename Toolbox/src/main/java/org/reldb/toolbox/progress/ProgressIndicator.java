@@ -11,6 +11,9 @@ public interface ProgressIndicator {
      */
     void initialise(int steps);
 
+    /** Get the number of steps. */
+    int getSteps();
+
     /**
      * Move the indicator to the given 0-based step. additionalInformation supplies additional progress text; null if not needed.
      *
@@ -24,7 +27,7 @@ public interface ProgressIndicator {
      *
      * @return Current indicator position.
      */
-    int getValue();
+    int getPosition();
 
     /**
      * Get the most recent non-null additional information.
