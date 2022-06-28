@@ -11,7 +11,11 @@ public interface ProgressIndicator {
      */
     void initialise(int steps);
 
-    /** Get the number of steps. */
+    /**
+     * Get the number of steps. Set via initialise(...)
+     *
+     * @return The total number of steps; -1 if unknown.
+     */
     int getSteps();
 
     /**

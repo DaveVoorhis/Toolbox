@@ -1,11 +1,12 @@
 package org.reldb.toolbox.progress;
 
 /**
- * A ProgressIndicator that outputs to the console.
+ * A ProgressIndicator that generates and outputs progress updates via specified lambda expressions.
  */
-public class ProgressIndicatorCore implements ProgressIndicator {
+public class StandardProgressIndicator implements ProgressIndicator {
     private final String messagePrefix;
     private final ProgressIndicatorDisplay display;
+    private final ProgressIndicatorMessage messageGenerator;
 
     private int steps = 0;
     private int position = 0;
@@ -17,36 +18,39 @@ public class ProgressIndicatorCore implements ProgressIndicator {
      *
      * @param messagePrefix This will be prefixed to all outputted messages.
      * @param display Lambda definition of display mechanism.
+     * @param messageGenerator Lambda definition of message generator.
      */
-    public ProgressIndicatorCore(String messagePrefix, ProgressIndicatorDisplay display) {
+    public StandardProgressIndicator(String messagePrefix,
+                                     ProgressIndicatorDisplay display,
+                                     ProgressIndicatorMessage messageGenerator) {
         this.messagePrefix = messagePrefix;
         this.display = display;
+        this.messageGenerator = messageGenerator;
     }
 
     /**
-     * Constructor for console display.
+     * Set progress message percent precision.
      *
-     * @param messagePrefix This will be prefixed to all outputted messages.
+     * @param precision Decimal precision of percentage. Default is 2 decimal places.
      */
-    public ProgressIndicatorCore(String messagePrefix) {
-        this(messagePrefix, core -> System.out.println(core.getProgressMessage()));
-    }
-
     public void setPrecision(int precision) {
         this.precision = precision;
     }
 
+    /**
+     * Get progress message percent precision.
+     *
+     * @return Decimal precision of percentage. Default is 2 decimal places.
+     */
     public int getPrecision() {
         return precision;
     }
 
     /**
-     * Constructor for console display without message prefix.
+     * Get the message prefix. Set in the constructor.
+     *
+     * @return The message prefix.
      */
-    public ProgressIndicatorCore() {
-        this("");
-    }
-
     public String getMessagePrefix() {
         return messagePrefix;
     }
@@ -61,7 +65,12 @@ public class ProgressIndicatorCore implements ProgressIndicator {
         return lastMessage;
     }
 
-    private float getPercent() {
+    /**
+     * Get percent progress as a float.
+     *
+     * @return Percent progress.
+     */
+    public float getPercent() {
         return (float)getPosition() / (float)getSteps() * (float)100.0;
     }
 
@@ -76,12 +85,13 @@ public class ProgressIndicatorCore implements ProgressIndicator {
         return steps;
     }
 
+    /**
+     * Get the current progress as a percentage.
+     *
+     * @return Current progress message.
+     */
     public String getProgressMessage() {
-        final var fmt = "%s%s: %." + getPrecision() + "f%% complete.";
-        return String.format(fmt,
-                getMessagePrefix() != null ? getMessagePrefix() : "",
-                getLastMessage() != null ? getLastMessage() : "",
-                getPercent());
+        return messageGenerator.generate(this);
     }
 
     @Override
